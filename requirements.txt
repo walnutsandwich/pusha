@@ -1,1 +1,2 @@
-pandora-chatgpt[cloud]
+flask
+requests
