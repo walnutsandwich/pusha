@@ -1,0 +1,160 @@
+<!-- templates/chat.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Chat</title>
+    <script src="{{ url_for('static', filename='code.jquery.com_jquery-3.6.0.min.js') }}"></script>
+    <style>
+        /* Styles for centering the chat interface */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .main-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            padding: 20px;
+        }
+
+        #golden-text {
+            font-size: 30px;
+            color: gold;
+            margin-bottom: 20px;
+            text-align: center;
+            animation: shimmer 1.5s infinite;
+        }
+
+        @keyframes shimmer {
+            0% {
+                text-shadow: 0 0 10px #ffff66, 0 0 20px #ffff66, 0 0 30px #ffcc00, 0 0 40px #ffcc00, 0 0 50px #ffcc00, 0 0 60px #ffcc00, 0 0 70px #ffcc00;
+            }
+            100% {
+                text-shadow: 0 0 10px #ffff99, 0 0 20px #ffff99, 0 0 30px #ffff33, 0 0 40px #ffff33, 0 0 50px #ffff33, 0 0 60px #ffff33, 0 0 70px #ffff33;
+            }
+        }
+
+        #image-container {
+            width: 100%;
+            max-width: 600px;
+            margin-bottom: 20px;
+        }
+
+        #image-container img {
+            width: 50%;    /* 设置宽度为 50% */
+            height: auto;  /* 保持图片的长宽比 */
+            display: block;
+            margin-left: auto;   /* 这两行使图片在容器中水平居中 */
+            margin-right: auto;
+        }
+
+        #chat-container {
+            width: 100%;
+            max-width: 600px;
+        }
+
+        #chat-box {
+            border: 1px solid #ccc;
+            padding: 10px;
+            height: 300px;
+            overflow-y: auto;
+            margin-bottom: 10px;
+        }
+
+        #chat-input-container {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        #message-input {
+            flex-grow: 1;
+            margin-right: 10px;
+        }
+
+        .message {
+            margin: 5px;
+            padding: 8px;
+            border-radius: 5px;
+            width: fit-content;
+        }
+
+        .user-message {
+            background-color: #e6f7ff;
+            align-self: flex-end; /* 居右 */
+        }
+
+        .server-message {
+            background-color: #fde6e6;
+            align-self: flex-start; /* 居左 */
+        }
+        
+
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div id="golden-text">施主请问？</div>
+        <div id="image-container">
+            <img src="{{ url_for('static', filename='centered_image.jpg') }}" alt="Centered Image">
+        </div>
+        
+        <div id="chat-container">
+            <div id="chat-box">
+                {% for message in messages %}
+                    <p>{{ message }}</p>
+                {% endfor %}
+            </div>
+            
+            <div id="chat-input-container">
+                <input type="text" id="message-input" placeholder="Enter your message">
+                <button onclick="sendMessage()">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            $('#message-input').on('keydown', function(event) {
+                if (event.key === 'Enter' || event.keyCode === 13) {
+                    event.preventDefault();
+                    sendMessage();
+                }
+            });
+        });
+
+        function sendMessage() {
+            const message = $('#message-input').val();
+
+            // 立即显示用户消息
+            $('#chat-box').append('<div class="message user-message">' + message + '</div>');
+            $('#message-input').val('');
+
+            // 添加回复的占位符
+            const replyPlaceholderId = 'reply-' + new Date().getTime(); // 使用时间戳作为唯一ID
+            $('#chat-box').append('<div class="message server-message" id="' + replyPlaceholderId + '"></div>');
+
+            let dotCount = 0;
+            const loadingDots = setInterval(function() {
+                dotCount = (dotCount + 1) % 10;
+                const dots = '.'.repeat(dotCount);
+                $('#' + replyPlaceholderId).text(dots);
+            }, 500);
+
+            // 向服务器发送消息
+            $.post('/send_message', {message: message}, function(response) {
+                if (response.status == 'success') {
+                    clearInterval(loadingDots); // 停止定时器
+                    $('#' + replyPlaceholderId).text(response.reply);
+                }
+            });
+        }
+
+    </script>
+</body>
+</html>
