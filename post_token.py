@@ -2,6 +2,11 @@ import requests
 import json
 import uuid
 
+
+mytoken = getenv('MYTOKEN')
+if not mytoken:
+    mytoken="""pk-this-is-a-real-free-pool-token-for-everyone"""
+
 class FakeGPT:
     def __init__(self) -> None:
         # self.message_id = str(uuid.uuid4())
@@ -21,7 +26,7 @@ class FakeGPT:
             'Sec-Fetch-Mode': 'cors',
             'Sec-Fetch-Site': 'cross-site',
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36 Edg/117.0.2045.43',
-            'X-Authorization': 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ik1UaEVOVUpHTkVNMVFURTRNMEZCTWpkQ05UZzVNRFUxUlRVd1FVSkRNRU13UmtGRVFrRXpSZyJ9.eyJodHRwczovL2FwaS5vcGVuYWkuY29tL3Byb2ZpbGUiOnsiZW1haWwiOiJ4aWFveWluZ3dhbmdsdW82MDFAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWV9LCJodHRwczovL2FwaS5vcGVuYWkuY29tL2F1dGgiOnsidXNlcl9pZCI6InVzZXItNk5GYmxVa2phYm8xYkF5ZVhMVnJWcmVnIn0sImlzcyI6Imh0dHBzOi8vYXV0aDAub3BlbmFpLmNvbS8iLCJzdWIiOiJnb29nbGUtb2F1dGgyfDEwMDE5MDQ4MjkxNTY0MDMzOTA5MyIsImF1ZCI6WyJodHRwczovL2FwaS5vcGVuYWkuY29tL3YxIiwiaHR0cHM6Ly9vcGVuYWkub3BlbmFpLmF1dGgwYXBwLmNvbS91c2VyaW5mbyJdLCJpYXQiOjE2OTU4MTU1MjMsImV4cCI6MTY5NzAyNTEyMywiYXpwIjoiVGRKSWNiZTE2V29USHROOTVueXl3aDVFNHlPbzZJdEciLCJzY29wZSI6Im9wZW5pZCBlbWFpbCBwcm9maWxlIG1vZGVsLnJlYWQgbW9kZWwucmVxdWVzdCBvcmdhbml6YXRpb24ucmVhZCBvcmdhbml6YXRpb24ud3JpdGUgb2ZmbGluZV9hY2Nlc3MifQ.SwdKdMIinup8v19A5_4qxxW7-5PX_BVmYzqx4b7lx1fVXVFCDh1PD2tWyD1-JK2MHmGi1mYCVxk1ho7B56jAwtRsY7vx1q5S_YEwn5LtOdY-KlchQBLhlTzVMMdRk2KNVNgUGYj_i0ajsXF8KNc5nWnvy4sLrMv_IgoEt3vfnXu8yhx8q8RSePqQQHsrHPEwGT36H8pvijChLlcOk3bDKp7WCevp-71j1pq5KPBFjWcZIF8dKq7W_cLDnRgjTtuXf9VAgJsYnHJzOvCS11Wh1nPc3VKYZ1voUdrYuhZzowd_YNu_KaGkttRqfi6cNX2JoKhZhp24rnDYLZnUg-pB_A'
+            'X-Authorization': mytoken
         }
         # URL目标地址
         self.url = "https://ai.fakeopen.com/api/conversation"
