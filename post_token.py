@@ -1,7 +1,7 @@
 import requests
 import json
 import uuid
-
+from os import getenv
 
 mytoken = getenv('MYTOKEN')
 if not mytoken:
